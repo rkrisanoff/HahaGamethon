@@ -124,7 +124,7 @@ def transmit():
 
                 if not (set(planet_garbage.keys()) - set(collected_garbage.keys())):  # планета не пуста
 
-                    if fullness >= 0.75:
+                    if fullness >= 0.8:
                         shortest_path, _distance = pathfinder.result(
                             universe_graph, current_planet, "Eden"
                         )

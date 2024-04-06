@@ -62,9 +62,12 @@ class Graph(object):
 
     def nearest_available(self, node,
                           banned_planets):  # принимает node (текущую планету), banned_planets (очищенные от мусора планеты)
-        _, nearests = dijkstra_algorithm(self, "Eden")
+        _, nearests = dijkstra_algorithm(self, node,
+                                         "Eden"
+                                         )
         planets = [planet for planet, distance in sorted(nearests.items(),
-                                                         key=lambda item: item[1]) if planet not in banned_planets]
+                                                         key=lambda item: item[1]) if
+                   planet not in banned_planets and planet != node]
         if len(planets) <= 1:
             return None
             # raise Exception("No  planets available")
