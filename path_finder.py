@@ -62,7 +62,7 @@ class Graph(object):
 
     def nearest_available(self, node,
                           banned_planets):  # принимает node (текущую планету), banned_planets (очищенные от мусора планеты)
-        _, nearests = dijkstra_algorithm(self, node)
+        _, nearests = dijkstra_algorithm(self, "Eden")
         planets = [planet for planet, distance in sorted(nearests.items(),
                                                          key=lambda item: item[1]) if planet not in banned_planets]
         if len(planets) <= 1:

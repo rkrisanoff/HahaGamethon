@@ -170,7 +170,7 @@ def distribute_figures(
     sorted_inserted_figures = sorted(
         [(k, v) for k, v in inserted_figures.items()],
         key=lambda value: len(value[1]),
-        # reverse=True
+        reverse=True
     )
     for inserted_figure_name, inserted_figures_coords in sorted_inserted_figures:
         try:
@@ -184,7 +184,6 @@ def distribute_figures(
                 bag[inserted_figure_name].append([x + _x, y + _y])
         except Exception as e:
             continue
-            # print(len(bag.keys()))
             # return bag
     print(len(bag.keys()))
     return bag
@@ -219,6 +218,8 @@ def distribute_figures(
 #                        )
 #
 # )
+
+
 #
 # visualize_tight_shapes(
 #     distribute_figures(

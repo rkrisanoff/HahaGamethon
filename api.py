@@ -1,4 +1,5 @@
 import json
+from time import sleep
 from typing import Sequence
 
 import requests
@@ -11,6 +12,7 @@ from pprint import pprint
 
 
 def get_universe() -> dict[str]:
+    sleep(0.15)
     response = requests.get(
         f"{cfg.api_root}/player/universe", headers={"X-Auth-Token": cfg.api_key_token}
     )
@@ -23,6 +25,7 @@ def get_universe() -> dict[str]:
 
 
 def travel(planets_path: Sequence[str] | str) -> dict[str]:
+    sleep(0.15)
     if not isinstance(planets_path, list):
         planets_path = [planets_path]
 
@@ -40,6 +43,8 @@ def travel(planets_path: Sequence[str] | str) -> dict[str]:
 
 
 def collect(garbage: dict[str, list[list[int]]]) -> dict:
+    sleep(0.15)
+
     if not list(garbage.keys()):
         raise Exception("Empty garbage")
 
@@ -54,9 +59,6 @@ def collect(garbage: dict[str, list[list[int]]]) -> dict:
             return response.json()
         case _:
             raise Exception("Wrong travel", response.status_code, response.text)
-
-
-
 
 # visualize_tight_shapes(
 #     distribute_figures(
