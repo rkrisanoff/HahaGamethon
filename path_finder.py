@@ -60,6 +60,16 @@ class Graph(object):
     def value(self, node1, node2):
         return self.graph[node1][node2]
 
+    def nearest_available(self, node,
+                          banned_planets):  # принимает node (текущую планету), banned_planets (очищенные от мусора планеты)
+        _, nearests = dijkstra_algorithm(self, node)
+        planets = [planet for planet, distance in sorted(nearests.items(),
+                                                         key=lambda item: item[1]) if planet not in banned_planets]
+        if len(planets) <= 1:
+            return None
+            # raise Exception("No  planets available")
+        return planets[1]
+
 
 def result(graph, start_node, target_node) -> tuple[Sequence[str], int]:
     previous_nodes, shortest_path = dijkstra_algorithm(graph=graph, start_node=start_node)
@@ -90,7 +100,6 @@ def to_graph(array):
 
     graph = Graph(unique_names, init_graph)
     return graph
-
 
 # with open('universe.json', 'r') as fl:
 #     data = json.load(fl)

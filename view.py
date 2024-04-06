@@ -90,7 +90,7 @@ class Coordinates2D(TypedDict):
 
 
 def distribute_figure(
-    bag: dict[str, list[list[int]]], inserted_figure_coordinates: list[list[int]]
+        bag: dict[str, list[list[int]]], inserted_figure_coordinates: list[list[int]]
 ):
     matrix_with_filled_fields = [[False] * CAPACITY_Y for _ in range(CAPACITY_X)]
 
@@ -118,33 +118,33 @@ def distribute_figure(
     possible_placements = []
 
     for rotate, potential_coordinates in itertools.product(
-        [0, 90, 180, 270], empty_field_coordinates
+            [0, 90, 180, 270], empty_field_coordinates
     ):
         potential_coordinates: Coordinates2D
         x_bag, y_bag = potential_coordinates["x"], potential_coordinates["y"]
         if not any(
-            any(
-                (
-                    inserted_figure_x + x_bag >= CAPACITY_X,
-                    inserted_figure_y + y_bag >= CAPACITY_Y,
-                    inserted_figure_x + x_bag < 0,
-                    inserted_figure_y + y_bag < 0,
+                any(
+                    (
+                            inserted_figure_x + x_bag >= CAPACITY_X,
+                            inserted_figure_y + y_bag >= CAPACITY_Y,
+                            inserted_figure_x + x_bag < 0,
+                            inserted_figure_y + y_bag < 0,
+                    )
                 )
-            )
-            or matrix_with_filled_fields[inserted_figure_x + x_bag][
-                inserted_figure_y + y_bag
-            ]
-            for inserted_figure_x, inserted_figure_y in [
-                rotate_coords(*inserted_figure_coords, rotate)
-                for inserted_figure_coords in inserted_figure_coordinates
-            ]
+                or matrix_with_filled_fields[inserted_figure_x + x_bag][
+                    inserted_figure_y + y_bag
+                ]
+                for inserted_figure_x, inserted_figure_y in [
+                    rotate_coords(*inserted_figure_coords, rotate)
+                    for inserted_figure_coords in inserted_figure_coordinates
+                ]
         ):
             possible_placements.append(
                 {
                     "point": {"x": x_bag, "y": y_bag},
                     "rotate": rotate,
                     "metric": full_metric_evaluate
-                    - sum(
+                              - sum(
                         sum(
                             (
                                 *rotate_coords(*inserted_figure_coords, rotate),
@@ -164,8 +164,8 @@ def distribute_figure(
 
 
 def distribute_figures(
-    bag: dict[str, list[list[int]]],
-    inserted_figures: dict[str, list[list[int]]],
+        bag: dict[str, list[list[int]]],
+        inserted_figures: dict[str, list[list[int]]],
 ) -> dict[str, list[list[int]]]:
     sorted_inserted_figures = sorted(
         [(k, v) for k, v in inserted_figures.items()],
@@ -219,93 +219,94 @@ def distribute_figures(
 #
 # )
 #
-visualize_tight_shapes(
-    distribute_figures(
-        bag={},
-        inserted_figures={
-            "2FvakD": [[0, 0], [0, 1], [1, 1], [2, 1], [3, 1], [2, 2]],
-            "2FvbCi": [[0, 1], [0, 0], [1, 1], [2, 1], [2, 0], [3, 0]],
-            "2FvvP1": [[0, 2], [0, 1], [0, 0], [1, 2], [2, 2], [2, 1]],
-            "2FwFZJ": [[0, 1], [1, 1], [1, 0], [2, 1], [3, 1]],
-            "2FwG63": [[0, 0], [1, 0], [2, 0], [1, 1], [2, 1]],
-            "2FwbGL": [[0, 0], [0, 1], [1, 1], [0, 2], [1, 2], [1, 3]],
-            "2Fwbiq": [
-                [0, 0],
-                [1, 0],
-                [2, 0],
-                [3, 0],
-                [0, 1],
-                [3, 1],
-                [0, 2],
-                [1, 2],
-                [1, 3],
-            ],
-            "2Fwvu8": [[0, 0], [0, 1], [1, 1], [1, 2], [2, 2], [2, 3], [3, 3]],
-            "2FxG5R": [[0, 1], [1, 1], [1, 0], [2, 1], [3, 1]],
-            "2FxGXv": [[0, 0], [0, 1], [1, 1], [2, 1], [1, 2], [1, 3], [2, 3], [3, 3]],
-            "2FxbiD": [
-                [0, 0],
-                [1, 0],
-                [2, 0],
-                [0, 1],
-                [0, 2],
-                [1, 2],
-                [2, 2],
-                [3, 2],
-                [2, 3],
-            ],
-            "2FxcAi": [[0, 0], [0, 1], [1, 1]],
-            "HXLk": [
-                [0, 0],
-                [1, 0],
-                [2, 0],
-                [3, 0],
-                [0, 1],
-                [0, 2],
-                [1, 2],
-                [2, 2],
-                [0, 3],
-                [2, 3],
-            ],
-            "HXoF": [[0, 2], [1, 2], [1, 1], [1, 0], [2, 2], [3, 2]],
-            "HryY": [[0, 2], [0, 1], [1, 1], [1, 0], [2, 1]],
-            "HsS3": [[0, 2], [0, 1], [0, 0], [1, 2], [1, 1]],
-            "JCcL": [[0, 0], [1, 0]],
-            "JXnd": [[0, 2], [0, 1], [0, 0], [1, 2], [1, 0], [2, 2], [3, 2]],
-            "JYF8": [
-                [0, 3],
-                [0, 2],
-                [0, 1],
-                [1, 3],
-                [1, 1],
-                [2, 3],
-                [2, 1],
-                [3, 3],
-                [3, 2],
-                [3, 1],
-                [3, 0],
-            ],
-            "JsRR": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [2, 1], [2, 2], [3, 2]],
-            "Jssv": [[0, 2], [0, 1], [0, 0], [1, 1], [2, 1], [3, 1], [3, 0]],
-            "KD8T": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1]],
-            "KYJk": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [3, 1]],
-            "KYmF": [[0, 0], [0, 1], [1, 1], [2, 1], [0, 2], [2, 2], [3, 2], [2, 3]],
-            "KswY": [[0, 2], [0, 1], [1, 1], [1, 0], [2, 1], [3, 1]],
-            "LD7q": [[0, 0], [0, 1], [1, 1], [1, 2]],
-            "LDaL": [
-                [0, 0],
-                [0, 1],
-                [1, 1],
-                [2, 1],
-                [0, 2],
-                [2, 2],
-                [0, 3],
-                [2, 3],
-                [3, 3],
-            ],
-        },
-    )
-)
+# visualize_tight_shapes(
+#     distribute_figures(
+#         bag={},
+#         inserted_figures={
+#             "2FvakD": [[0, 0], [0, 1], [1, 1], [2, 1], [3, 1], [2, 2]],
+#             "2FvbCi": [[0, 1], [0, 0], [1, 1], [2, 1], [2, 0], [3, 0]],
+#             "2FvvP1": [[0, 2], [0, 1], [0, 0], [1, 2], [2, 2], [2, 1]],
+#             "2FwFZJ": [[0, 1], [1, 1], [1, 0], [2, 1], [3, 1]],
+#             "2FwG63": [[0, 0], [1, 0], [2, 0], [1, 1], [2, 1]],
+#             "2FwbGL": [[0, 0], [0, 1], [1, 1], [0, 2], [1, 2], [1, 3]],
+#             "2Fwbiq": [
+#                 [0, 0],
+#                 [1, 0],
+#                 [2, 0],
+#                 [3, 0],
+#                 [0, 1],
+#                 [3, 1],
+#                 [0, 2],
+#                 [1, 2],
+#                 [1, 3],
+#             ],
+#             "2Fwvu8": [[0, 0], [0, 1], [1, 1], [1, 2], [2, 2], [2, 3], [3, 3]],
+#             "2FxG5R": [[0, 1], [1, 1], [1, 0], [2, 1], [3, 1]],
+#             "2FxGXv": [[0, 0], [0, 1], [1, 1], [2, 1], [1, 2], [1, 3], [2, 3], [3, 3]],
+#             "2FxbiD": [
+#                 [0, 0],
+#                 [1, 0],
+#                 [2, 0],
+#                 [0, 1],
+#                 [0, 2],
+#                 [1, 2],
+#                 [2, 2],
+#                 [3, 2],
+#                 [2, 3],
+#             ],
+#             "2FxcAi": [[0, 0], [0, 1], [1, 1]],
+#             "HXLk": [
+#                 [0, 0],
+#                 [1, 0],
+#                 [2, 0],
+#                 [3, 0],
+#                 [0, 1],
+#                 [0, 2],
+#                 [1, 2],
+#                 [2, 2],
+#                 [0, 3],
+#                 [2, 3],
+#             ],
+#             "HXoF": [[0, 2], [1, 2], [1, 1], [1, 0], [2, 2], [3, 2]],
+#             "HryY": [[0, 2], [0, 1], [1, 1], [1, 0], [2, 1]],
+#             "HsS3": [[0, 2], [0, 1], [0, 0], [1, 2], [1, 1]],
+#             "JCcL": [[0, 0], [1, 0]],
+#             "JXnd": [[0, 2], [0, 1], [0, 0], [1, 2], [1, 0], [2, 2], [3, 2]],
+#             "JYF8": [
+#                 [0, 3],
+#                 [0, 2],
+#                 [0, 1],
+#                 [1, 3],
+#                 [1, 1],
+#                 [2, 3],
+#                 [2, 1],
+#                 [3, 3],
+#                 [3, 2],
+#                 [3, 1],
+#                 [3, 0],
+#             ],
+#             "JsRR": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [2, 1], [2, 2], [3, 2]],
+#             "Jssv": [[0, 2], [0, 1], [0, 0], [1, 1], [2, 1], [3, 1], [3, 0]],
+#             "KD8T": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1]],
+#             "KYJk": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [3, 1]],
+#             "KYmF": [[0, 0], [0, 1], [1, 1], [2, 1], [0, 2], [2, 2], [3, 2], [2, 3]],
+#             "KswY": [[0, 2], [0, 1], [1, 1], [1, 0], [2, 1], [3, 1]],
+#             "LD7q": [[0, 0], [0, 1], [1, 1], [1, 2]],
+#             "LDaL": [
+#                 [0, 0],
+#                 [0, 1],
+#                 [1, 1],
+#                 [2, 1],
+#                 [0, 2],
+#                 [2, 2],
+#                 [0, 3],
+#                 [2, 3],
+#                 [3, 3],
+#             ],
+#         },
+#     )
+# )
+
 
 
 def show_me_planet(planets: list[tuple[str, str, int]]) -> None:
