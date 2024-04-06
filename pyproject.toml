@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "hahaton"
+version = "0.1.0"
+description = ""
+authors = ["Крисанов Роман Валерьевич <284712@niuitmo.ru>"]
+readme = "README.md"
+
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.31.0"
+webencodings = "^0.5.1"
+myplotlib = "^1.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
