@@ -1,5 +1,7 @@
 from collections import deque
+from math import ceil
 from pprint import pprint
+from time import sleep
 
 import api
 import path_finder as pathfinder
@@ -27,7 +29,7 @@ class Ship:
             self._fly()
         else:
             self._collect_trash()
-            if (self._check_inventery()):
+            if self._check_inventery():
                 self.to_eden()
                 self._fly()
             else:
@@ -60,50 +62,92 @@ class Ship:
         self.path = deque(pathfinder.result(universe, self.current, "Eden")[0][1:])
 
 
+def get_fullness(bag):
+    return sum(len(trash_coords) for trash_coords in bag.values()) / (
+        CAPACITY_X * CAPACITY_Y
+    )
+
+
 def transmit():
-    forbidden_planets = {'Earth', 'Eden'}
+    forbidden_planets = {"Earth", "Eden"}
     fullnesses = []
     response = api.get_universe()
     universe_graph = pathfinder.to_graph(response["universe"])
-    current_planet = response["ship"]["planet"]['name']
+    current_planet = response["ship"]["planet"]["name"]
     closest_planet = universe_graph.nearest_available(current_planet, forbidden_planets)
 
     while closest_planet:
+        sleep(0.51)
         shortest_path, _distance = pathfinder.result(
-            universe_graph,
-            current_planet,
-            closest_planet
+            universe_graph, current_planet, closest_planet
         )
-        shortest_path = shortest_path[1:]
 
-        traveled_json = api.travel(shortest_path)
+        pprint(f"ZERO{shortest_path = }")
+        traveled_json = api.travel(shortest_path[1:])
+        response = api.get_universe()
+        universe_graph = pathfinder.to_graph(response["universe"])
+        current_planet = response["ship"]["planet"]["name"]
+
         ship_garbage = traveled_json["shipGarbage"] or {}
         planet_garbage = traveled_json["planetGarbage"]
+        if not set(planet_garbage.keys()):
+            forbidden_planets.add(current_planet)
 
+            response = api.get_universe()
+            bag = response["ship"]["garbage"]
+            visualize_tight_shapes(bag)
+            universe_graph = pathfinder.to_graph(response["universe"])
+            current_planet = response["ship"]["planet"]["name"]
+            closest_planet = universe_graph.nearest_available(
+                current_planet, forbidden_planets
+            )
+            continue
+
+        old_fullness = get_fullness(ship_garbage)
         collected_garbage = distribute_figures(
             bag=ship_garbage,
             inserted_figures=planet_garbage,
         )
-        collect_json = api.collect(collected_garbage)
-        fullness = sum(1. for _ in collected_garbage.values()) / (CAPACITY_X * CAPACITY_Y)
+        fullness = get_fullness(collected_garbage)
+        pprint(f"{old_fullness = }")
+        pprint(f"{fullness = }")
         fullnesses.append(fullness)
-        pprint(f'{fullness = }')
-        if not (set(planet_garbage.keys()) - set(collected_garbage.keys())):
-            forbidden_planets.add(current_planet)
-            bag = api.get_universe()['ship']['garbage']
-            visualize_tight_shapes(bag)
-            response = api.get_universe()
-            universe_graph = pathfinder.to_graph(response["universe"])
-            current_planet = response["ship"]["planet"]['name']
-            closest_planet = universe_graph.nearest_available(current_planet, forbidden_planets)
+
+        if (
+            (old_fullness < 0.001 and fullness - old_fullness > 0.30)
+            or (old_fullness >= 0.001 and fullness - old_fullness > 0.05)
+        ) or not (set(planet_garbage.keys()) - set(collected_garbage.keys())):
+            collect_json = api.collect(collected_garbage)
+
+            if not (set(planet_garbage.keys()) - set(collected_garbage.keys())):
+                forbidden_planets.add(current_planet)
+                response = api.get_universe()
+                bag = response["ship"]["garbage"]
+                visualize_tight_shapes(bag)
+                universe_graph = pathfinder.to_graph(response["universe"])
+                current_planet = response["ship"]["planet"]["name"]
+                closest_planet = universe_graph.nearest_available(
+                    current_planet, forbidden_planets
+                )
+            else:
+                shortest_path, _distance = pathfinder.result(
+                    universe_graph, current_planet, "Eden"
+                )
+                pprint(f"{shortest_path = }")
+                traveled_json = api.travel(shortest_path[1:])
+                response = api.get_universe()
+                universe_graph = pathfinder.to_graph(response["universe"])
+                current_planet = response["ship"]["planet"]["name"]
+
         else:
             shortest_path, _distance = pathfinder.result(
-                universe_graph,
-                current_planet,
-                'Eden'
+                universe_graph, current_planet, "Eden"
             )
-            shortest_path = shortest_path[1:]
+            pprint(f"{shortest_path = }")
             traveled_json = api.travel(shortest_path[1:])
+            response = api.get_universe()
+            universe_graph = pathfinder.to_graph(response["universe"])
+            current_planet = response["ship"]["planet"]["name"]
 
     return forbidden_planets, fullness
 

@@ -183,8 +183,9 @@ def distribute_figures(
                 _x, _y = rotate_coords(_x, _y, rule_for_insert["rotate"])
                 bag[inserted_figure_name].append([x + _x, y + _y])
         except Exception as e:
-            print(len(bag.keys()))
-            return bag
+            continue
+            # print(len(bag.keys()))
+            # return bag
     print(len(bag.keys()))
     return bag
 
@@ -306,7 +307,6 @@ def distribute_figures(
 #         },
 #     )
 # )
-
 
 
 def show_me_planet(planets: list[tuple[str, str, int]]) -> None:
